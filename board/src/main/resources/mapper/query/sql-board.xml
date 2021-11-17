@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board.board.mapper.BoardMapper">
+	<!-- 게시글 목록 -->
+	<select id="selectBoardList" resultType="board.board.dto.BoardDto">
+		<![CDATA[
+			SELECT BOARD_IDX
+			     , TITLE
+			     , HIT_CNT
+			     , CREATED_DATE
+			  FROM T_BOARD
+			 WHERE DELETED_YN = 'N'
+			 ORDER BY BOARD_IDX DESC
+		]]>
+	</select>
+	<!-- 게시글 상세내용 -->
+	<select id="selectBoardDetail" parameterType="int" resultType="board.board.dto.BoardDto">
+		<![CDATA[
+			SELECT BOARD_IDX
+			     , TITLE
+			     , CONTENTS
+			     , HIT_CNT
+			     , CREATED_DATE
+			     , CREATOR_ID
+			  FROM T_BOARD
+			 WHERE DELETED_YN = 'N'
+			   AND BOARD_IDX = #{boardIdx}
+		]]>
+	</select>
+	<!-- 게시글 하나의 첨부파일 리스트
+		 kb(킬로바이트)로 나타내기 위해
+	 -->
+	<select id="selectFileList" parameterType="int" resultType="board.board.dto.FileDto">
+		<![CDATA[
+			SELECT IDX
+				 , BOARD_IDX
+			     , ORIGINAL_FILE_NAME
+			     , ROUND((FILE_SIZE / 1024),0) AS file_size
+			  FROM T_FILE
+			 WHERE DELETED_YN = 'N'
+			   AND BOARD_IDX = #{boardIdx}
+		]]>
+	</select>
+	<!-- 첨부파일 정보 -->
+	<select id="selectFileInfo" parameterType="map" resultType="board.board.dto.FileDto">
+		<![CDATA[
+			SELECT IDX
+				 , BOARD_IDX
+			     , ORIGINAL_FILE_NAME
+			     , FILE_SIZE
+			     , STORED_FILE_PATH
+			  FROM T_FILE
+			 WHERE DELETED_YN = 'N'
+			   AND BOARD_IDX = #{boardIdx}
+			   AND IDX = #{idx}
+		]]>
+	</select>
+	<!-- 게시글 등록 -->
+	<insert id="insertBoard" parameterType="board.board.dto.BoardDto">
+		<selectKey order="AFTER" keyProperty="boardIdx" resultType="int">
+			SELECT T_BOARD_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+		<![CDATA[
+			INSERT INTO T_BOARD(
+				   BOARD_IDX
+			     , TITLE
+			     , CONTENTS
+			     , CREATED_DATE
+			     , CREATOR_ID
+			)
+			VALUES(
+				   T_BOARD_SEQ.NEXTVAL
+				 , #{title}
+				 , #{contents}
+				 , SYSDATE
+				 , 'admin'
+			)
+		]]>
+	</insert>
+	<!-- 첨부파일 등록 TODO : 시퀀스 자동 증가 적용되도록 수정 - 리스트 안에서 어떻게 적용해야 하는지 -->
+	<insert id="insertBoardFileList" parameterType="board.board.dto.FileDto">
+		INSERT INTO T_FILE(
+			   IDX
+			 , BOARD_IDX
+		     , ORIGINAL_FILE_NAME
+		     , STORED_FILE_PATH
+		     , FILE_SIZE
+		     , CREATOR_ID
+		     , CREATED_DATE
+		)
+		SELECT T_FILE_SEQ.NEXTVAL, A.*
+		  FROM (
+		<foreach collection="list" item="item" separator="UNION ALL">
+		  	SELECT #{item.boardIdx}
+		  	     , #{item.originalFileName}
+				 , #{item.storedFilePath}
+				 , #{item.fileSize}
+				 , 'admin'
+				 , SYSDATE
+			  FROM DUAL
+		</foreach>
+		  ) A
+	</insert>
+	<!-- 조회수 증가 -->
+	<update id="updateHitCount" parameterType="int">
+		<![CDATA[
+			UPDATE T_BOARD
+			   SET HIT_CNT = HIT_CNT+1
+			 WHERE BOARD_IDX = #{boardIdx}
+		]]>
+	</update>
+	<!-- 게시글 수정 -->
+	<update id="updateBoard" parameterType="board.board.dto.BoardDto">
+		<![CDATA[
+			UPDATE T_BOARD
+			   SET TITLE = #{title}
+			     , CONTENTS = #{contents}
+			     , UPDATED_DATE = SYSDATE
+			     , UPDATER_ID = 'admin'
+			 WHERE BOARD_IDX = #{boardIdx}
+		]]>
+	</update>
+	<!-- 게시글 삭제 -->
+	<update id="deleteBoard" parameterType="board.board.dto.BoardDto">
+		<![CDATA[
+			UPDATE T_BOARD
+			   SET DELETED_YN = 'Y'
+			     , UPDATED_DATE = SYSDATE
+			     , UPDATER_ID = 'admin'
+			 WHERE BOARD_IDX = #{boardIdx}
+		]]>
+	</update>
+	<!--  첨부파일 삭제 -->
+	<update id="deleteBoardFile" parameterType="board.board.dto.FileDto">
+		<![CDATA[
+			UPDATE T_FILE
+			   SET DELETED_YN = 'Y'
+			     , UPDATED_DATE = SYSDATE
+			     , UPDATER_ID = 'admin'
+			 WHERE BOARD_IDX = #{boardIdx}
+			   AND IDX = #{idx}
+		]]>
+	</update>
+
+</mapper>
