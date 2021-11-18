@@ -28,7 +28,7 @@ public class JpaBoardController {
 	@Autowired
 	private JpaBoardService jpaBoardService;
 	
-	
+	//board list
 	@RequestMapping(value="/jpa/board", method = RequestMethod.GET)
 	public ModelAndView openBoardList() throws Exception {
 		ModelAndView mv = new ModelAndView("/jpa/list");
@@ -40,11 +40,13 @@ public class JpaBoardController {
 		
 	}
 	
+	//board write 화면
 	@RequestMapping(value="/jpa/board/write", method=RequestMethod.GET)
 	public String openBoardWrite() throws Exception {
 		return "/jpa/write";
 	}
 	
+	//board write(insert query문 동작)
 	@RequestMapping(value="/jpa/board/write", method=RequestMethod.POST)
 	public String insertBoard(BoardEntity board, MultipartHttpServletRequest multipartHttpServletRequest) throws Exception {
 		int hitCnt = board.getHitCnt();
@@ -53,6 +55,7 @@ public class JpaBoardController {
 		return "redirect:/jpa/board";
 	}
 	
+	//board view화면 - 상세 페이지 확인
 	@RequestMapping(value="/jpa/board/{boardIdx}", method=RequestMethod.GET)
 	public ModelAndView openBoardDetail(@PathVariable("boardIdx") int boardIdx) throws Exception {
 		ModelAndView mv = new ModelAndView("/board/jpaBoardDetail");
