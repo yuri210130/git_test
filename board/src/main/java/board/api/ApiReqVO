@@ -1,0 +1,55 @@
+package com.open.api.ss.no.service.privateApi;
+
+import org.apache.ibatis.type.Alias;
+
+import com.open.cmmn.model.CmmnDefaultVO;
+
+@Alias("Api01VO")
+public class ApiReqVO{
+	private static final long serialVersionUID = 5179054460565075455L;
+	
+  	private String kepcoNum;
+  	private String userNm;
+  	private String entersApiTgtSysCd;
+  	private String key;
+  	private String seqUser;
+  	
+  	
+	public String getKepcoNum() {
+		return kepcoNum;
+	}
+	public void setKepcoNum(String kepcoNum) {
+		this.kepcoNum = kepcoNum;
+	}
+	public String getUserNm() {
+		return userNm;
+	}
+	public void setUserNm(String userNm) {
+		this.userNm = userNm;
+	}
+	public String getEntersApiTgtSysCd() {
+		return entersApiTgtSysCd;
+	}
+	public void setEntersApiTgtSysCd(String entersApiTgtSysCd) {
+		this.entersApiTgtSysCd = entersApiTgtSysCd;
+	}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
+	public String getSeqUser() {
+		return seqUser;
+	}
+	public void setSeqUser(String seqUser) {
+		this.seqUser = seqUser;
+	}
+  	
+  	
+  	
+  	
+  	
+
+
+}
