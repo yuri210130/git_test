@@ -1,0 +1,54 @@
+package com.open.api.ss.no.service.privateApi;
+
+import org.apache.ibatis.type.Alias;
+
+import com.open.cmmn.model.CmmnDefaultVO;
+import com.open.ma.ppa.thpty.service.esb.EsbThptyRes2VO;
+
+@Alias("Api02VO")
+public class ApiResVO{
+	private static final long serialVersionUID = 5179054460565075455L;
+	
+  	private String statusCode;
+  	private String seqUser;
+  	private String message;
+  	private String timestamp;
+  	
+  	private ApiResVO data;
+  	
+	public String getStatusCode() {
+		return statusCode;
+	}
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
+	}
+	public String getSeqUser() {
+		return seqUser;
+	}
+	public void setSeqUser(String seqUser) {
+		this.seqUser = seqUser;
+	}
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	public String getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+	public ApiResVO getData() {
+		return data;
+	}
+	public void setData(ApiResVO data) {
+		this.data = data;
+	}
+  	
+  	
+  	
+
+
+}
